@@ -8,6 +8,9 @@ const errorMiddleware = (err: Error, req: Request, res: Response, next: NextFunc
     case 'ValidationError':
       res.status(400).json({ message: details[0].message });
       break;
+    case 'Unauthorized':
+      res.status(401).json({ message });
+      break;
     case 'NotFoundError':
       res.status(404).json({ message });
       break;

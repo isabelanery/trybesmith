@@ -5,7 +5,9 @@ import User from '../interfaces/user.interface';
 dotenv.config();
 
 export default class JwtService {
-  public createToken = (data: User): string => {
+  public createToken = (payload: User): string => {
+    const { password, ...data } = payload;
+
     const token = jwt.sign({ data }, 'dev', {
       algorithm: 'HS256',
       expiresIn: '3d',

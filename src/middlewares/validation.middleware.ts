@@ -3,8 +3,6 @@ import Joi from 'joi';
 // import User from '../interfaces/user.interface';
 
 export default class Validation {
-  // constructor(private )
-
   public login = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.body;
 
@@ -26,21 +24,22 @@ export default class Validation {
     const product = req.body;
 
     const schema = Joi.object({
-      name: Joi.string().min(3).required()
-        .messages({ string: '"name" must be a string',
-          min: '"name" must be at least 3 characters long',
-          required: '"name" is required',
-        }),
-      amount: Joi.string().min(2).required()
-        .messages({
-          string: '"amount" must be a string',
-          min: '"amount" must be at least 3 characters long',
-          required: '"amount" is required',
-        }),
+      name: Joi.string().min(3).required(),
+      // .messages({ string: '"name" must be a string',
+      //   min: '"name" must be at least 3 characters long',
+      //   required: '"name" is required',
+      // }),
+      amount: Joi.string().min(2).required(),
+      // .messages({
+      //   string: '"amount" must be a string',
+      //   min: '"amount" must be at least 3 characters long',
+      //   required: '"amount" is required',
+      // }),
     });
 
     const { error } = schema.validate(product);
-
+    console.log(error);
+    
     if (error) throw error;
 
     next();

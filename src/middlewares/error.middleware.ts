@@ -14,8 +14,8 @@ const errorMiddleware = (err: Error, req: Request, res: Response, next: NextFunc
     case 'NotFoundError':
       res.status(404).json({ message });
       break;
-    case 'ConflictError':
-      res.status(409).json({ message });
+    case 'UnprocessableEntity':
+      res.status(422).json({ message });
       break;
     default:
       res.sendStatus(500).json({ message: err });

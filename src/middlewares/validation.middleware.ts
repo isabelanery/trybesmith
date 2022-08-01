@@ -15,6 +15,29 @@ const schemaProduct = Joi.object({
   }),
 });
 
+const schemaUser = Joi.object({
+  username: Joi.string().min(3).required().messages({ 
+    string: '"username" must be a string',
+    min: '"username" must be at least 3 characters long',
+    required: '"username" is required',
+  }),
+  classe: Joi.string().min(3).required().messages({
+    string: '"classe" must be a string',
+    min: '"classe" must be at least 3 characters long',
+    required: '"classe" is required',
+  }),
+  password: Joi.string().min(8).required().messages({
+    string: '"password" must be a string',
+    min: '"password" must be at least 8 characters long',
+    required: '"password" is required',
+  }),
+  level: Joi.number().min(1).required().messages({ 
+    number: '"level" must be a number',
+    min: '"level" must be greater than 0',
+    required: '"level" is required',
+  }),
+});
+
 export default class Validation {
   public login = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.body;
@@ -48,6 +71,26 @@ export default class Validation {
       throw error; 
     }
 
+    next();
+  };
+  
+  public user = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.body;
+    
+    const { error } = schemaUser.validate(user);
+    console.log(error);
+    
+    if (error 
+      && (error.details[0].type.includes('string') || error.details[0].type.includes('number'))) {
+      const e = new Error(error.details[0].message);
+      e.name = 'UnprocessableEntity';
+      throw e;
+    }
+    
+    if (error) {
+      throw error; 
+    }
+  
     next();
   };
 }

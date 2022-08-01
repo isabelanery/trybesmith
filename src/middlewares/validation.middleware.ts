@@ -37,13 +37,10 @@ export default class Validation {
           min: '"amount" must be at least 3 characters long',
           required: '"amount" is required',
         }),
-
     });
 
     const { error } = schema.validate(product);
 
-    console.log(error);
-    
     if (error) throw error;
 
     next();

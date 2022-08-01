@@ -10,8 +10,6 @@ export default class UserService {
 
   public validateLogin = async ({ username, password }: Login): Promise<User> => {
     const user = await this.model.findUser(username);
-
-    console.log(user);
     
     if (!user || user.password !== password) {
       const e = new Error('Username or password invalid');

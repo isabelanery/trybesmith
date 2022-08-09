@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
+import JwtService from '../services/jwt.service';
 // import User from '../interfaces/user.interface';
 
 const schemaProduct = Joi.object({
@@ -78,7 +79,6 @@ export default class Validation {
     const user = req.body;
     
     const { error } = schemaUser.validate(user);
-    console.log(error);
     
     if (error 
       && (error.details[0].type.includes('string') || error.details[0].type.includes('number'))) {
@@ -87,10 +87,49 @@ export default class Validation {
       throw e;
     }
     
-    if (error) {
-      throw error; 
-    }
+    if (error) throw error; 
   
+    next();
+  };
+
+  public order = async (req: Request, res: Response, next: NextFunction) => {
+    const order = req.body;
+
+    const schemaOrder = Joi.object({
+      productsIds: Joi.array().items(Joi.number()).min(1).required()
+        .messages({
+          'array.min': '"productsIds" must include only numbers',
+        }),
+    });
+
+    const { error } = schemaOrder.validate(order);
+    
+    if (error 
+      && (error.details[0].type.includes('array') || error.details[0].type.includes('number'))) {
+      const e = new Error(error.details[0].message);
+      e.name = 'UnprocessableEntity';
+      throw e;
+    }
+    
+    if (error) throw error;
+
+    next();
+  };
+
+  public token = async (req: Request, res: Response, next: NextFunction) => {
+    const { authorization } = req.headers;
+    
+    if (!authorization) {
+      const e = new Error('Token not found');
+      e.name = 'Unauthorized';
+      throw e;
+    }
+    
+    const jwtService = new JwtService();
+    const { id } = await jwtService.validateToken(authorization); 
+    
+    req.headers = { ...req.headers, userId: id };
+
     next();
   };
 }
